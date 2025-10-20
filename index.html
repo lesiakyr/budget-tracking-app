@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Budget Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-wallet"></i> Simple Budget Tracker</h1>
+            <p>Track your spending, manage your budget, and stay on top of your finances</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="budget-overview">
+                <div class="budget-card">
+                    <h3>Monthly Budget</h3>
+                    <div class="budget-amount" id="budgetAmount">$0</div>
+                    <button class="btn btn-primary" onclick="openBudgetModal()">Set Budget</button>
+                </div>
+                <div class="budget-card">
+                    <h3>Total Spent</h3>
+                    <div class="spent-amount" id="totalSpent">$0</div>
+                </div>
+                <div class="budget-card">
+                    <h3>Remaining</h3>
+                    <div class="remaining-amount" id="remainingAmount">$0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="expense-section">
+                <h2><i class="fas fa-plus-circle"></i> Add Expense</h2>
+                <form id="expenseForm" class="expense-form">
+                    <div class="form-group">
+                        <label for="expenseDescription">Description</label>
+                        <input type="text" id="expenseDescription" placeholder="e.g., Groceries, Coffee, Gas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseAmount">Amount</label>
+                        <input type="number" id="expenseAmount" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseCategory">Category</label>
+                        <select id="expenseCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="food">Food & Dining</option>
+                            <option value="transportation">Transportation</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="bills">Bills & Utilities</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Expense</button>
+                </form>
+            </div>
+
+            <div class="expenses-section">
+                <div class="expenses-header">
+                    <h2><i class="fas fa-list"></i> Recent Expenses</h2>
+                    <div class="expenses-controls">
+                        <div class="sort-controls">
+                            <label for="sortBy">Sort by:</label>
+                            <select id="sortBy" onchange="applyFiltersAndSort()">
+                                <option value="date-desc">Date (Newest First)</option>
+                                <option value="date-asc">Date (Oldest First)</option>
+                                <option value="amount-desc">Amount (Highest First)</option>
+                                <option value="amount-asc">Amount (Lowest First)</option>
+                            </select>
+                        </div>
+                        <div class="filter-controls">
+                            <label for="categoryFilter">Category:</label>
+                            <select id="categoryFilter" onchange="applyFiltersAndSort()">
+                                <option value="all">All Categories</option>
+                                <option value="food">Food & Dining</option>
+                                <option value="transportation">Transportation</option>
+                                <option value="shopping">Shopping</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="bills">Bills & Utilities</option>
+                                <option value="healthcare">Healthcare</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="expenses-list" id="expensesList">
+                    <div class="no-expenses">No expenses added yet. Start tracking your spending!</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reminders-section">
+            <h2><i class="fas fa-bell"></i> Bill Reminders</h2>
+            <button class="btn btn-secondary" onclick="openReminderModal()">Add Reminder</button>
+            <div class="reminders-list" id="remindersList">
+                <div class="no-reminders">No reminders set. Add your recurring bills!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Modal -->
+    <div id="budgetModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBudgetModal()">&times;</span>
+            <h2>Set Monthly Budget</h2>
+            <form id="budgetForm">
+                <div class="form-group">
+                    <label for="monthlyBudget">Monthly Budget Amount</label>
+                    <input type="number" id="monthlyBudget" step="0.01" placeholder="0.00" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Budget</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reminder Modal -->
+    <div id="reminderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeReminderModal()">&times;</span>
+            <h2>Add Bill Reminder</h2>
+            <form id="reminderForm">
+                <div class="form-group">
+                    <label for="reminderName">Bill Name</label>
+                    <input type="text" id="reminderName" placeholder="e.g., Rent, Electric Bill" required>
+                </div>
+                <div class="form-group">
+                    <label for="reminderAmount">Amount</label>
+                    <input type="number" id="reminderAmount" step="0.01" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label for="reminderDate">Due Date</label>
+                    <input type="date" id="reminderDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="reminderFrequency">Frequency</label>
+                    <select id="reminderFrequency" required>
+                        <option value="">Select Frequency</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="yearly">Yearly</option>
+                        <option value="one-time">One-time</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Reminder</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
